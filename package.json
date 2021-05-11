@@ -1,6 +1,6 @@
 {
   "name": "my-friendly-slackbot",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "My Friendly #SlackBot is a slackbot that makes Slack more friendly",
   "main": "index.js",
   "scripts": {

@@ -20,7 +20,20 @@ module.exports = async (SLACK_SIGNING_SECRET, SLACK_BOT_TOKEN, {
     }
 
     await app.start(process.env.PORT || 3000);
-    console.log('⚡️ Bolt app is running!');
+    console.log('⚡️ Friendly bot app is running!');
+}
+
+async function getNewChannelBotId(client, cursor = '') {
+    const channels = await client.conversations.list({limit: 1000, cursor});
+    const newChannelBot = channels.channels.filter(channel => channel.name_normalized === '_new_channel_bot');
+
+    if (newChannelBot.length) {
+        return newChannelBot[0].id
+    } else if (channels.response_metadata.next_cursor){
+        return await getNewChannelBotId(client, channels.response_metadata.next_cursor)
+    } else {
+        return null;
+    }
 }
 
 function setupChannelCreated(app) {
@@ -34,19 +47,17 @@ function setupChannelCreated(app) {
         await (ack);
 
         if (!newChannelBotId) {
-            const channels = await client.conversations.list();
-            const newChannelBot = channels.channels.filter(channel => channel.name_normalized === '_new_channel_bot');
-
-            if (newChannelBot.length) {
-                newChannelBotId = newChannelBot[0].id;
-            }
+            newChannelBotId = await getNewChannelBotId(client);
         }
 
-        await client.chat.postMessage({
-            channel: newChannelBotId,
-            text: `#${event.channel.name} has been created`,
-            parse: 'full'
-        });
+        // Channel might not exist
+        if (newChannelBotId) {
+            await client.chat.postMessage({
+                channel: newChannelBotId,
+                text: `#${event.channel.name} has been created`,
+                parse: 'full'
+            });
+        }
 
     });
 }
