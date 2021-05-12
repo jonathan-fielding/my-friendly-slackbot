@@ -1,0 +1,41 @@
+{
+    "_metadata": {
+        "major_version": 1,
+        "minor_version": 1
+    },
+    "display_information": {
+        "name": "Friendly SlackBot"
+    },
+    "features": {
+        "bot_user": {
+            "display_name": "Friendly",
+            "always_online": false
+        }
+    },
+    "oauth_config": {
+        "scopes": {
+            "user": [
+                "channels:read",
+                "channels:history"
+            ],
+            "bot": [
+                "channels:manage",
+                "channels:read",
+                "chat:write",
+                "chat:write.public"
+            ]
+        }
+    },
+    "settings": {
+        "event_subscriptions": {
+            "request_url": "YOUR_URL",
+            "user_events": [
+                "channel_created",
+                "message.channels"
+            ]
+        },
+        "org_deploy_enabled": false,
+        "socket_mode_enabled": false,
+        "is_hosted": false
+    }
+}
