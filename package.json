@@ -1,6 +1,6 @@
 {
   "name": "my-friendly-slackbot",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "My Friendly #SlackBot is a slackbot that makes Slack more friendly",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,7 @@
   "dependencies": {
     "@slack/bolt": "^3.3.0",
     "@slack/events-api": "^3.0.0",
-    "dotenv": "^9.0.2"
+    "dotenv": "^9.0.2",
+    "profane-words": "^1.4.0"
   }
 }

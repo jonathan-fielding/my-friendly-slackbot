@@ -1,10 +1,12 @@
+const words = require('profane-words');
 const {
     App,
 } = require('@slack/bolt');
 
 module.exports = async (SLACK_SIGNING_SECRET, SLACK_BOT_TOKEN, {
     newChannel = true, 
-    inclusiveLanguage = true,
+    inclusiveLanguageWarning = true,
+    offensiveLanguageWarning = true,
 } = {}) => {
     const app = new App({
         signingSecret: SLACK_SIGNING_SECRET,
@@ -15,8 +17,12 @@ module.exports = async (SLACK_SIGNING_SECRET, SLACK_BOT_TOKEN, {
         setupChannelCreated(app);
     }
 
-    if (inclusiveLanguage) {
+    if (inclusiveLanguageWarning) {
         setupInclusiveLanguage(app);
+    }
+
+    if (offensiveLanguageWarning) {
+        setupBlockSwearwords(app)
     }
 
     await app.start(process.env.PORT || 3000);
@@ -69,5 +75,17 @@ function setupInclusiveLanguage(app) {
             user: event.user,
             text: 'The use of _"Guys"_ is not an inclusive language, why not try "team", "folks" or "everyone"',
         });
+    });
+}
+
+function setupBlockSwearwords(app) {
+    app.message(async ({ message, event, client }) => {
+        if (words.includes(message.text.toLowerCase())) {
+            client.chat.postEphemeral({
+                channel: event.channel,
+                user: event.user,
+                text: 'Please consider using less offensive language',
+            });
+        }
     });
 }
